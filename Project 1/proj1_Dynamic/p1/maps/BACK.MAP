@@ -1,0 +1,244 @@
+MAP
+  IMAGETYPE      PNG
+  STATUS         ON 
+  EXTENT         913154.843600 120114.582600 1067382.510900 272932.046000
+  IMAGECOLOR     255 255 255  
+  SHAPEPATH      "/tmp"
+  
+  PROJECTION
+    "init=epsg:2263"
+  END
+  
+  OUTPUTFORMAT
+    NAME png
+    DRIVER "GD/PNG"
+    MIMETYPE "image/png"
+    IMAGEMODE RGB
+    EXTENSION "png"
+  END
+  
+  OUTPUTFORMAT
+    NAME jpeg
+    DRIVER "GD/JPEG"
+    MIMETYPE "image/jpeg"
+    IMAGEMODE RGB
+    EXTENSION "jpg"
+    FORMATOPTION QUALITY=80
+  END
+
+  SYMBOL
+      NAME 'circle'
+      TYPE ELLIPSE
+      POINTS 1 1 END
+      FILLED TRUE
+    END
+
+  WEB
+    METADATA
+       "wms_srs" 			"EPSG:2263 EPSG:4326"    
+       "wms_formats" 			'png'
+    END    
+  END
+  
+  # Start of LAYER DEFINITIONS ---------------------------------------------
+
+
+
+  LAYER # NYC community district begins here
+    NAME         nycd
+    DATA         nycd
+    STATUS       ON
+    TYPE         POLYGON
+    DUMP 	 TRUE
+    CLASS
+      NAME       "nycd"
+      STYLE
+        COLOR        250 250 200
+        OUTLINECOLOR 232 232 132
+      END
+    END
+
+  END # NYC community district ends here
+
+
+
+
+ LAYER # NYC All NYC Highway Routes begins here
+     NAME         Allhw
+     DATA         hw
+     STATUS       ON
+     TYPE         LINE
+     DUMP 	 TRUE
+     CONNECTIONTYPE POSTGIS
+     CONNECTION  "user=ras14 password=sina dbname=d817 host=192.168.88.30 "
+     DATA "the_geom from (select * from hw) as foo using unique gid using srid=2263"	    
+     TEMPLATE	 spwms.html
+     CLASS
+       NAME       "All NYC Highway Routes"
+       STYLE
+         COLOR        20 20  200
+
+       END
+     END
+END # Roads
+
+
+ 
+
+
+
+ LAYER # NYC (1) All aoi Tuples begins here
+     NAME         aoi
+     DATA         aoi
+     STATUS       ON
+     TYPE         POINT
+     DUMP 	 TRUE
+     CONNECTIONTYPE POSTGIS
+     CONNECTION  "user=ras14 password=sina dbname=d817 host=192.168.88.30 "
+     DATA "the_geom from (select * from aoi where objectid in (select objectid from aoi)) as foo using unique gid using srid=2263"	    
+     TEMPLATE	 spwms.html
+     CLASS
+       NAME       "(1) All aoi Tuples"
+       STYLE
+        SYMBOL	     'circle'
+        SIZE	     5	
+        COLOR        255 0 0
+
+       END
+     END
+
+  END # NYC (1) All aoi Tuples ends here
+
+
+
+ LAYER # NYC (2)NYC Highway Routes begins here
+     NAME         hw
+     DATA         hw
+     STATUS       ON
+     TYPE         LINE
+     DUMP 	 TRUE
+     CONNECTIONTYPE POSTGIS
+     CONNECTION  "user=ras14 password=sina dbname=d817 host=192.168.88.30 "
+     DATA "the_geom from (select * from hw where georte in ( select georte from hw group by georte having count(*)>1)) as foo using unique gid using srid=2263"	    
+     TEMPLATE	 spwms.html
+     CLASS
+       NAME       "(2)NYC Highway Routes"
+       STYLE
+         COLOR        255 0  0
+
+       END
+     END
+
+  END # NYC (2)NYC Highway Routes ends here
+
+
+
+ LAYER # NYC (3)NYC Community Districts begins here
+     NAME         cd
+     DATA         cd
+     STATUS       ON
+     TYPE         POLYGON
+     DUMP 	 TRUE
+     CONNECTIONTYPE POSTGIS
+     CONNECTION  "user=ras14 password=sina dbname=d817 host=192.168.88.30 "
+     DATA "the_geom from (select * from cd where gid in (select gid from cd where borocd/100=4)) as foo using unique gid using srid=2263"	    
+     TEMPLATE	 spwms.html
+     CLASS
+       NAME       "(3)NYC Community Districts"
+       STYLE
+        COLOR        132 32 232
+        OUTLINECOLOR 32 32 32
+
+       END
+     END
+
+  END # NYC (3)NYC Community Districts ends here
+
+
+
+
+ LAYER # NYC (4) NYC Convex Hull begins here
+     NAME         cvhl
+      DATA         aoi
+     STATUS       ON
+     TYPE         POLYGON
+     DUMP 	 TRUE
+     CONNECTIONTYPE POSTGIS
+     CONNECTION  "user=ras14 password=sina dbname=d817 host=192.168.88.30 "
+     DATA "the_geom1 from (select 1 as gid,st_convexhull(st_collect(the_geom)) as the_geom1 from aoi) as foo using unique gid using srid=2263"	    
+     TEMPLATE	 spwms.html
+     CLASS
+       NAME       "(4) NYC Convex Hull"
+       STYLE
+         COLOR        200 200  255
+
+       END
+     END
+  END # NYC (4)NYC Convex Hull ends here
+
+
+ LAYER # NYC (5)NYC Buffer begins here
+     NAME         buf
+     DATA         hw
+     STATUS       ON
+     TYPE         Polygon
+     DUMP 	 TRUE
+     CONNECTIONTYPE POSTGIS
+     CONNECTION  "user=ras14 password=sina dbname=d817 host=192.168.88.30 "
+     DATA "the_geom2 from (select gid,st_buffer(the_geom,5000) as the_geom2 from hw) as foo using unique gid using srid=2263"	    
+     TEMPLATE	 spwms.html
+     CLASS
+       NAME       "(5)NYC Buffer"
+       STYLE
+         COLOR        200 200  255
+         OUTLINECOLOR 32 32 32
+       END
+     END
+
+  END # NYC (6)NYC Buffer ends here
+
+ LAYER # NYC (6)NYC InterSect begins here
+     NAME         int
+     DATA         hw
+     STATUS       ON
+     TYPE         Polygon
+     DUMP 	 TRUE
+     CONNECTIONTYPE POSTGIS
+     CONNECTION  "user=ras14 password=sina dbname=d817 host=192.168.88.30 "
+     DATA "the_geom2 from (select gid,st_buffer(the_geom,5000) as the_geom2 from hw) as foo using unique gid using srid=2263"	    
+     TEMPLATE	 spwms.html
+     CLASS
+       NAME       "(6)NYC InterSect "
+       STYLE
+         COLOR        200 200  255
+
+       END
+     END
+
+  END # NYC (6)NYC Buffer ends here
+
+
+
+  LAYER # NYC Police Precinct begins here
+     NAME         nypp
+     DATA         nypp
+     STATUS       ON
+     TYPE         POLYGON
+     DUMP 	 TRUE
+     CONNECTIONTYPE POSTGIS
+     CONNECTION  "user=demo password=demo dbname=coursedemo host=192.168.88.30"
+     DATA "the_geom from (select * from nypp order by precinct) as foo using unique precinct using SRID=2263"	    
+     TEMPLATE	 spwms.html
+     CLASS
+       NAME       "NYC Police Precinct"
+       STYLE
+         COLOR        232 232 232
+         OUTLINECOLOR 32 32 32
+       END
+     END
+   END # YC Police Precinct layer ends here
+
+ # End of LAYER DEFINITIONS -------------------------------
+
+END # All map files must come to an end just as all other things must come to...
+

@@ -1,0 +1,72 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <script src="js/OpenLayers.js"></script>
+    <script type="text/javascript">
+        var lon = -73.9;
+        var lat = 40.7;
+        var zoom = 10;
+        var map, l_cd,l_pp;
+	var newmap,newmap2,newmap3;
+        function init(){
+            map = new OpenLayers.Map( 'map' );
+           newmap = new OpenLayers.Layer.WMS( "aoi tuples",
+                    "http://134.74.146.40/~vij14/proj1/mapscripts/template.php?", {layers: 'nycd,ny11',format: "image/png"} );
+            map.addLayer(newmap);
+	    newmap2 = new OpenLayers.Layer.WMS( "Highway with 2 or more segments(red in colour)",
+                    "http://134.74.146.40/~vij14/proj1/mapscripts/template.php?", {layers: 'nycd,hwyr,ny22',format: "image/png"} );
+            map.addLayer(newmap2);
+	    newmap3 = new OpenLayers.Layer.WMS( "Community districts in Queens",
+                    "http://134.74.146.40/~vij14/proj1/mapscripts/template.php?", {layers: 'nycd,ny33',format: "image/png"} );
+            map.addLayer(newmap3);
+	
+	     newmap4 = new OpenLayers.Layer.WMS( "Convex Hull Of aoi",
+                    "http://134.74.146.40/~vij14/proj1/mapscripts/template.php?", {layers: 'nycd,ny11,ny44',format: "image/png"} );
+            map.addLayer(newmap4);
+
+	 newmap5 = new OpenLayers.Layer.WMS( "Buffer using Radius of 5000f",
+                    "http://134.74.146.40/~vij14/proj1/mapscripts/template.php?", {layers: 'nycd,ny55',format: "image/png"} );
+            map.addLayer(newmap5);
+
+	    newmap6 = new OpenLayers.Layer.WMS( "Intersection",
+                    "http://134.74.146.40/~vij14/proj1/mapscripts/template.php?", {layers: 'nycd,ny66',format: "image/png"} );
+            map.addLayer(newmap6);
+
+	   newmap7 = new OpenLayers.Layer.WMS( "Union",
+                    "http://134.74.146.40/~vij14/proj1/mapscripts/template.php?", {layers: 'nycd,ny77',format: "image/png"} );
+            map.addLayer(newmap7);
+
+   	   newmap8 = new OpenLayers.Layer.WMS( "sd-cg Difference",
+                    "http://134.74.146.40/~vij14/proj1/mapscripts/template.php?", {layers: 'nycd,ny88',format: "image/png"} );
+            map.addLayer(newmap8);
+
+   	   newmap9 = new OpenLayers.Layer.WMS( "cg-sd Difference",
+                    "http://134.74.146.40/~vij14/proj1/mapscripts/template.php?", {layers: 'nycd,ny99',format: "image/png"} );
+            map.addLayer(newmap9);
+
+   	   newmap100 = new OpenLayers.Layer.WMS( "SymmetricalDifference",
+                    "http://134.74.146.40/~vij14/proj1/mapscripts/template.php?", {layers: 'nycd,ny100',format: "image/png"} );
+            map.addLayer(newmap100);
+
+ 
+   
+	
+
+	    map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+	    
+
+	    map.addControl(new OpenLayers.Control.MousePosition({position: new OpenLayers.Pixel(100,0)}));
+            map.addControl(new OpenLayers.Control.LayerSwitcher({'div':OpenLayers.Util.getElement('layerswitcher'),activeColor:'green'}));
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Vijay's Project</h1>
+    <table><tr>
+    <td><div id="map" style="width:800px; height:600px"></div></td>
+    <td><div id="layerswitcher" style="width:200px; height:600px"></div><td>
+    </tr></table>
+  </body></html>
+
+
+
+
