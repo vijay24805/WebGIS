@@ -1,0 +1,121 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <script src="js/OpenLayers.js"></script>
+    <script type="text/javascript">
+	var Temp="?="
+	var Temp2="r"
+	var Start="http://134.74.146.40/~kas14/p1/template.html?=1r2"
+        var ADD0="http://134.74.146.40/~kas14/p1/template.html";
+        var ADD1="http://134.74.146.40/~kas14/p1/mapscripts/get1.php";
+        var ADDP="http://134.74.146.40/~kas14/p1/mapscripts/template.php";
+        var ADDP0="http://134.74.146.40/~kas14/p1/mapscripts/L";
+	var P=".php";
+        var aoiID="?aoiID=";
+        var BUFFER="&BUFFER=";
+	var lon = -73.9;
+        var lat = 40.7;
+        var zoom = 10;
+        var BUffer=50;
+	var ID=50;
+s = window.location.search;
+L=s.substr(s.indexOf("=")+1,1)
+r=s.substr(s.indexOf("r")+1,10)
+
+ID2=$_GET['aoiID'];
+
+
+        function init(){
+            map = new OpenLayers.Map( 'map' );
+ 
+
+            l_aoi = new OpenLayers.Layer.WMS( "(1)NYC All aoi Tuples",ADDP0+L+P+aoiID+r, {layers: 'nycd,N1',format: "image/png"} );
+            map.addLayer(l_aoi);
+
+
+
+            l_hw = new OpenLayers.Layer.WMS( "(1)NYC All aoi Tuples",ADDP+aoiID+(ID1.value), {layers: 'nycd,DIS4,hw',format: "image/png"} );
+            map.addLayer(l_hw);
+
+
+
+            l_cd = new OpenLayers.Layer.WMS( "(3)NYC Community Districts",
+                    "http://134.74.146.40/~kas14/p1/mapscripts/template.php?", {layers: 'nycd,cd',format: "image/png"} );
+            map.addLayer(l_cd);
+
+
+
+            l_cvhl = new OpenLayers.Layer.WMS( "(4)NYC Convex Hull",
+                    "http://134.74.146.40/~kas14/p1/mapscripts/template.php?", {layers: 'nycd,cvhl,aoi',format: "image/png"} );
+            map.addLayer(l_cvhl);
+
+
+
+
+            l_buf = new OpenLayers.Layer.WMS( "(5)NYC buffer 5000",
+                    "http://134.74.146.40/~kas14/p1/mapscripts/template.php?", {layers: 'nycd,buf,Allhw',format: "image/png"} );
+            map.addLayer(l_buf);
+
+
+
+            l_ccc = new OpenLayers.Layer.WMS( "(6)NYC Convex Hull",
+                    "http://134.74.146.40/~kas14/p1/mapscripts/template.php?", {layers: 'nycd,cd',format: "image/png"} );
+            map.addLayer(l_ccc);
+
+
+            l_cdold = new OpenLayers.Layer.WMS( "NYC Community District",
+                    "http://134.74.146.40/~kas14/p1/mapscripts/template.php?", {layers: 'nycd',format: "image/png"} );
+            map.addLayer(l_cdold);
+
+
+            l_pp = new OpenLayers.Layer.WMS( "NYC Police Precinct",
+                    "http://134.74.146.40/~kas14/p1/mapscripts/template.php?", {layers: 'nypp',format: "image/png"} );
+            map.addLayer(l_pp);
+
+
+
+            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+			map.addControl(new OpenLayers.Control.MousePosition({position: new OpenLayers.Pixel(100,0)}));
+            map.addControl(new OpenLayers.Control.LayerSwitcher({'div':OpenLayers.Util.getElement('layerswitcher'),activeColor:'green'}));
+        }
+    </script>
+  </head>
+  <body onload="init()">
+    <h1 id="title">Proj1: Sina Kashuk</h1>
+<a href="javascript:window.location=Start">Start</a>
+<br>
+Road Buffer<form oninput="Buffer.value=parseInt(a.value)*100">
+<output name="Buffer" type="string" for="a"></output>
+<br>
+0 <input type="range" id="a" value="50">10000
+<br>
+aoi ID =  
+
+<input type="number" id="ID1" value="1">
+<br>
+<br>
+<a href="javascript:window.location=ADD0+Temp+L+Temp2+r  ">(1)NYC All aoi Tuples</a>
+<br>
+<a href="javascript:window.location=ADD0+Temp+L+Temp2+(ID1.value)  ">Layer2</a>
+<br>
+<a href="javascript:window.location=ADD0+Temp+L+Temp2+(ID1.value)  ">Layer3</a>
+<br>
+<a href="javascript:window.location=ADD0+aoiID+(ID1.value)+BUFFER+parseInt(a.value)*100  ">RUN1</a>
+<a href="javascript:window.location=ADD0+s  ">RUN1.5</a>
+<a href="javascript:window.location=ADD0+r  ">RUN1.6</a>
+
+<a href="javascript:window.location=ADD1+aoiID+(ID1.value)+BUFFER+parseInt(a.value)*100  ">RUN2</a>
+
+
+<br>
+</form></div>
+
+
+    <table><tr>
+    <td><div id="map" style="width:800px; height:600px"></div></td>
+    <td><div id="layerswitcher" style="width:200px; height:600px"></div><td>
+    </tr></table>
+  </body></html>
+
+
+
+

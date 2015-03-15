@@ -1,0 +1,37 @@
+Problem 3 -Compute the area size, number of crashes and crash density for all police precincts.
+------------------------------------------------------------------------------------------------
+
+
+Part1) Compute the area size of all police precinct.
+
+Solution: There exist a column called area in nypp table. This column would be updated with area(in sq miles) using :
+---------
+
+UPDATE nypp SET area= ST_Area(geom)*0.0000000358700643;
+
+
+
+Part2) Compute the number of crashes for each precinct:
+
+Solution: Update the num_crash column in nypp table with number of crashes information. sql query as below:
+---------
+
+UPDATE nypp
+SET num_crash=B.total
+FROM
+(
+ SELECT count(*) AS total, nypp.precinct
+ FROM nycgrid,nypp
+ WHERE ST_contains(nypp.geom,nycgrid.the_geom)
+ GROUP BY nypp.precinct
+) B
+WHERE nypp.precinct = B.precinct;
+
+
+
+Part3) Calculating crash density of each precinct
+
+Solution:
+---------
+
+UPDATE nypp SET crash_density=num_crash/area;

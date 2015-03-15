@@ -1,0 +1,154 @@
+MAP
+  IMAGETYPE      PNG
+  STATUS         ON 
+  EXTENT         913154.843600 120114.582600 1067382.510900 272932.046000
+  IMAGECOLOR     255 255 255  
+  SHAPEPATH      "/tmp"
+  
+  PROJECTION
+    "init=epsg:2263"
+  END
+  
+  OUTPUTFORMAT
+    NAME png
+    DRIVER "GD/PNG"
+    MIMETYPE "image/png"
+    IMAGEMODE RGB
+    EXTENSION "png"
+  END
+  
+  OUTPUTFORMAT
+    NAME jpeg
+    DRIVER "GD/JPEG"
+    MIMETYPE "image/jpeg"
+    IMAGEMODE RGB
+    EXTENSION "jpg"
+    FORMATOPTION QUALITY=80
+  END
+
+  SYMBOL
+      NAME 'circle'
+      TYPE ELLIPSE
+      POINTS 1 1 END
+      FILLED TRUE
+    END
+
+  WEB
+    METADATA
+       "wms_name"       		"nypp"
+       "wms_title" 			"Police Precinct"
+       "wms_abstract"			"NYC Police Precinct Map"
+       "wms_onlineresource" 		"proj2.php"       
+       "wms_srs" 			"EPSG:2263 EPSG:4326"    
+       "wms_formats" 			'png'
+	"wfs_title"            		"Police Precinct"
+       "wfs_onlineresource"   		"proj2.php" 
+       "wfs_srs"               		"EPSG:2263 EPSG:4326"  
+       "wms_feature_info_mime_type" 	"text/html"
+	"wms_enable_request"		 "*"  
+	 "wfs_enable_request" 		"*"   
+   END    
+  END
+  
+
+
+ SYMBOL
+  NAME "circle"
+  TYPE ellipse
+  FILLED false
+  POINTS
+    1 1
+  END
+  END
+
+SYMBOL
+  NAME "P"
+  TYPE truetype
+  FONT "arial"
+  CHARACTER "P"
+END # SYMBOL
+
+SYMBOL
+  NAME "circlef"
+  TYPE ellipse
+  FILLED true
+  POINTS
+    1 1
+  END # POINTS
+END # SYMBOL
+
+SYMBOL
+  NAME "v-poly"
+  TYPE vector
+  FILLED true
+  POINTS
+    0  0
+    3.5 8
+    7 0
+    5.2 0
+    3.5 4
+    1.8 0
+    0 0
+  END # POINTS
+END # SYMBOL
+
+
+SYMBOL
+  NAME "hatchsymbol"
+  TYPE hatch
+END
+
+
+  # Start of LAYER DEFINITIONS ---------------------------------------------
+
+
+
+  LAYER # NYC community district begins here
+    NAME         nycd
+    DATA         nycd
+    STATUS       ON
+    TYPE         POLYGON
+    DUMP 	 TRUE
+    CLASS
+      NAME       "nycd"
+      STYLE
+        COLOR        250 250 200
+        OUTLINECOLOR 232 232 132
+      END
+    END
+
+  END # NYC community district ends here
+
+  LAYER # aoi tuples
+     NAME         ny11
+     DATA         data311
+     STATUS       ON
+     TYPE         POINT
+     DUMP 	TRUE
+     CONNECTIONTYPE POSTGIS
+     CONNECTION  "user=vij14 password=kumar dbname=d813 host=192.168.88.30"
+     DATA "the_geom from (select * from data311) as foo using unique uniquekey using SRID=2263"	    
+     TEMPLATE	 spwms.html
+     CLASS
+       NAME       "Data311"
+      STYLE
+      SYMBOL "v-poly"
+      COLOR 0 0 0
+    END # STYLE
+    STYLE
+      SYMBOL "circlef"
+      COLOR 255 0 0
+      SIZE 4
+    END # STYLE
+
+     END
+   END # aoi tuples
+
+
+
+
+
+ # End of LAYER DEFINITIONS -------------------------------
+
+END # All map files must come to an end just as all other things must come to...
+

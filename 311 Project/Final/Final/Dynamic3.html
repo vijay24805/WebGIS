@@ -1,0 +1,457 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <script src="js/OpenLayers.js"></script>
+<link rel="stylesheet" type="text/css" href="js/timePicker.css" />
+   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+ 
+  <script type="text/javascript" src="js/jquery.timePicker.js"></script>
+
+
+<script>
+
+$(document).ready(function(){
+      var div=$("#container");
+    div.animate({height:'500px',opacity:'1'},"slow");
+      
+});
+
+</script> 
+
+<script>
+$(document).ready(function(){
+  $("#hide").click(function(){
+    $("#container").hide();
+  });
+ $("#hide1").click(function(){
+    $("#container").hide();
+  });
+
+  $("#show").click(function(){
+    $("#container").show();
+  });
+ $("#original").click(function(){
+    $("p").show();
+  });
+});
+</script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+
+
+<script type="text/javascript">
+$(function () {
+    var chart;
+    $(document).ready(function() {
+        $.getJSON("data.php", function(json) {
+        
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'container',
+                    type: 'line',
+                    marginRight: 130,
+                    marginBottom: 25
+                },
+                title: {
+                    text: '311 complanits grouped by month',
+                    x: -20 //center
+                },
+                subtitle: {
+                    text: '',
+                    x: -20
+                },
+                xAxis: {
+                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                },
+                yAxis: {
+                    title: {
+                        text: 'Complaints'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                },
+                tooltip: {
+                    formatter: function() {
+                            return '<b>'+ this.series.name +'</b><br/>'+
+                            this.x +': '+ this.y;
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'top',
+                    x: -10,
+                    y: 100,
+                    borderWidth: 0
+                },
+                series: json
+            });
+        });
+    
+    });
+    
+});
+</script>
+
+
+
+
+
+    <script type="text/javascript">
+	var Temp="?="
+	var Temp2="r"
+        var ADD0="http://134.74.146.40/~kas14/Final/Start.html";
+        var ADDPHP="http://134.74.146.40/~vij14/p1/mapscripts/L";
+ 	var url="http://134.74.146.40/~vij14/p1/mapscripts/L4.php?";
+	var start_date="date=";	
+	var e_date="edate=";
+	var sd='2014/01/01';
+	var strt_date,end_date,strt_time;
+	var P=".php";
+        var aoiID="?aoiID=";
+	var lon = -73.9;
+        var lat = 40.7;
+        var zoom = 10.5;
+	var ID1=5;
+	var aprnd="&";
+	
+	var L1=1;
+	var L2=2;
+	var L3=3;
+
+
+	    var map=null,cosmetic_layer=null;
+	    var gml=null;
+	    var wms_url='proj2.php?';
+       	    var wfs_url='proj2.php?';
+	    var layer_name='nypp';
+	    var map_div='map';
+	    var node_div='nodeList';
+	    var gml_div='GMLTable';
+	    var wfs_div='WFSTable';
+	    var fid_seq=0;
+
+
+
+	//Dynamic http parameter start here
+	s = window.location.search;
+	//alert(s);
+	L=s.substr(s.indexOf("=")+1,1)
+	//alert(L);
+	r=s.substr(s.indexOf("r")+1,10)
+	
+	//Dynamic http  end here
+		
+	 
+
+	//alert(url+start_date+sd);
+
+
+
+
+
+       function init(){
+
+	   gml=new OpenLayers.Format.GML({'extractAttributes': true});
+			
+
+
+
+          		map = new OpenLayers.Map('map', {
+			maxResolution: 2
+
+			});
+           
+	   if (r==0) {
+   		 r = 2;
+		L=L2;
+		}
+	   l_aoi = new OpenLayers.Layer.WMS( "NYC Districts",ADDPHP+L+P+aoiID+r, {layers: 'nycd,N1',format: "image/png"} );
+            map.addLayer(l_aoi);
+	    //map.removeLayer(l_aoi);
+ 	   // alert(ADDPHP+L+P+aoiID+r);		
+ 	    var data311 = new OpenLayers.Layer.WMS( "Total Number of Complaints",
+                    "http://134.74.146.40/~vij14/p1/mapscripts/template.php?", {layers: 'nycd,ny11',format: "image/png"} );
+	   map.addLayer(data311);
+            
+	    	    
+	    var l_wms = new OpenLayers.Layer.WMS( "NYC Complaints By Census tract",
+						wms_url, {layers: layer_name,format: "image/png"} );
+	    
+	    map.addLayer(l_wms);
+
+
+	    //alert(url+start_date+sd);
+
+
+
+	    map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+	    map.addControl(new OpenLayers.Control.MousePosition({position: new OpenLayers.Pixel(100,0)}));
+            map.addControl(new OpenLayers.Control.LayerSwitcher({'div':OpenLayers.Util.getElement('layerswitcher'),activeColor:'green'}));
+
+
+			map.events.register('click', map, function (e) {
+					OpenLayers.Util.getElement('nodeList').innerHTML = "Loading... please wait...";
+					var url =  l_wms.getFullRequestString({
+									REQUEST: "GetFeatureInfo",
+									EXCEPTIONS: "application/vnd.ogc.se_xml",
+									BBOX: l_wms.map.getExtent().toBBOX(),
+									X: e.xy.x,
+									Y: e.xy.y,
+									INFO_FORMAT: 'text/html',
+									QUERY_LAYERS: l_wms.params.LAYERS,
+									WIDTH: l_wms.map.size.w,
+									HEIGHT: l_wms.map.size.h});
+					
+					OpenLayers.Util.getElement('nodeList').innerHTML=url
+					//alert(url);
+					OpenLayers.loadURL(url, '', this, setHTML);
+					
+					OpenLayers.Event.stop(e);
+			  });
+
+
+
+	   // drop down list for selecting aoi
+	       var $select = $(".1-100");
+ 		   for (i=1;i<=100;i++){
+    		   $select.append($('<option></option>').val(i).html(i))
+		   
+  	       }
+
+	    	$('.1-100').on('change',function(){
+  			window.location=ADD0+Temp+L3+Temp2+($(this).val());
+			$('select.1-100').empty();
+			 
+		});
+
+
+		
+		$(function() {
+   		 $( "#datepicker" ).datepicker({ dateFormat: 'yy-mm-dd' });
+		
+ 		 });
+		
+		$(function() {
+   		 $( "#datepicker1" ).datepicker({ dateFormat: 'yy-mm-dd' });
+ 		 });
+	
+	
+
+
+
+		 $( "#datepicker1" ).change(function() {
+		strt_date=$( "#datepicker" ).val();
+		end_date=$( "#datepicker1" ).val();
+		//alert(end_date);
+		var startdate= new OpenLayers.Layer.WMS( "Complaints:"+strt_date+" TO "+end_date, url+start_date+strt_date+aprnd+e_date+end_date, {layers: 'nycd,ny12',format: "image/png"} );
+            	//alert(url+start_date+strt_date+aprnd+e_date+end_date);	
+	    	map.addLayer(startdate);
+
+		});
+
+		$(function() {
+   	    	$("#time1").timePicker({ 'timeFormat': 'H:i:s' }); 
+
+ 	 	});
+
+		$( "#time1" ).change(function() {
+		    alert("hello");
+		});
+
+
+	
+		
+
+        }
+
+
+
+
+			function setHTML(response)
+			{
+				OpenLayers.Util.getElement(node_div).innerHTML = response.responseText;
+				var table= OpenLayers.Util.getElement(gml_div);
+				var getfeaturerow=OpenLayers.Util.getElement(wfs_div).tBodies[0].rows[1];
+				if(table!=null&&getfeaturerow!=null)
+				{
+					var fid=table.tBodies[0].rows[fid_seq].cells[1].innerHTML;
+					var url=wfs_url+"Service=WFS&Version=1.0.0&Request=GetFeature&FeatureID="+layer_name+"."+fid;
+					var html="<a href="+url+">WFS GetFeature ("+fid+")";
+					getfeaturerow.cells[0].innerHTML=html;
+					//alert(url);
+					OpenLayers.loadURL(url, '', this, add_wfs_layer);
+			}
+			}
+
+
+	   function add_wfs_layer(response)
+		   {
+			if(cosmetic_layer!=null)
+			{
+				map.removeLayer(cosmetic_layer);
+				cosmetic_layer.destroy();
+				cosmetic_layer=null;
+			}
+			//alert(response.responseText);
+			var doc = response.responseText;
+			var features=gml.read(doc);
+			//alert(features.length);
+			cosmetic_layer=new OpenLayers.Layer.Vector("Selected Feature");
+			cosmetic_layer.addFeatures(features);
+			map.addLayer(cosmetic_layer);
+			//map.zoomToExtent(cosmetic_layer.getExtent());
+		  }
+
+
+
+
+
+    </script>
+
+<style>
+#header {
+    background-color:black;
+    color:white;
+    text-align:center;
+    padding:5px;
+}
+#nav {
+    line-height:30px;
+    background-color:#eeeeee;
+    height:800px;
+    width:270px;
+    float:left;
+    padding:5px;	      
+}
+#section {
+    width:200px;
+    height:500px;
+    float:left;
+    padding:10px;	 	 
+}
+#footer {
+    background-color:black;
+    color:white;
+    clear:both;
+    text-align:center;
+   padding:5px;	 	 
+}
+</style>
+
+
+
+
+
+</head>
+<br>
+<body onload="init()">
+
+
+<button>Start Animation</button>
+<button id="hide1">Hide</button>
+
+
+<div id="header">
+<h1></h1>
+</div>
+
+
+
+
+
+
+
+
+<div id="container" style="min-width: 400px; height: 500px;margin: 5px;"></div>
+
+
+
+<div id="header">
+<h1>311 Complaints(2010-2014)</h1>
+</div>
+
+<div id="nav">
+
+District:<br>
+<select id="ID2" size="5" onclick="District()">
+  <option value="1">Manhattan</option>
+  <option value="2">Bronx</option>
+  <option value="3">Brooklyn</option>
+  <option value="4">Queens</a>
+  <option value="5">Staten Island</option>
+</select>
+<br>
+<br>
+
+</p>
+<h3><b><u>Complaints by Date:</u></b></h3>
+<p>Start Date: <input type="text" id="datepicker"></p>
+
+<p>End Date: <input type="text" id="datepicker1"></p>
+<br>
+
+<h3><b><u>Graph Analysis Of Complaints :</b></u></h3>
+<button id="show">Complaints By Months</button>
+<button id="hide">Hide</button>
+
+<form target="_blank" action="http://134.74.146.40/~kas14/Final/Dynamic2.html">
+    <input type="submit" value="Complaints By Days">
+<button id="hide2">Hide</button>
+</form>
+
+<div id="layerswitcher" style="width:270px; height:600px"></div>
+
+
+</div>
+
+ 
+
+
+
+
+
+
+
+
+<div id="section">
+</form>
+<table>
+    <tr>
+    	<td><div id="map" style="width:800px; height:600px"></div>
+		
+</td>
+    	<td>
+			<div style="width:300">
+				<div id="nodeList">
+				</div>
+			</div>
+		</td>
+		</tr>
+	</table>
+  	<table id='WFSTable'>
+  	<tr><td></td></tr>
+  	<tr><td></td></tr>
+  	</table>
+
+</body>
+</html>
+
+
+
+<script>
+
+function District() {
+window.location=ADD0+Temp+L2+Temp2+(ID2.value)    
+}
+function Buff() {
+window.location=ADD0+Temp+L1+Temp2+(a.value*100);
+}
+
+</script>
